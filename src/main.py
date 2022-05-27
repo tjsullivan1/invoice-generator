@@ -9,9 +9,14 @@ app = Flask(__name__)
 PORT = 5000
 
 
+# Get current date
+def get_current_date():
+    return datetime.now().strftime("%B %-d, %Y")
+
+
 @app.route("/", methods=["GET", "POST"])
 def hello_world():
-    today = datetime.today().strftime("%B %-d, %Y")
+    today = get_current_date()
     posted_data = request.get_json() or {}
     default_data = {
         "invoice_number": 123,
