@@ -5,15 +5,15 @@ repos:
     rev: v4.2.0
     hooks:
     -   id: trailing-whitespace
-#     -   id: detect-private-key
-#     -   id: detect-aws-credentials
-#     -   id: end-of-file-fixer
-#     -   id: check-yaml
-#     -   id: check-json
-#     -   id: check-xml
-#     -   id: check-toml
-#     -   id: check-added-large-files
-#     -   id: requirements-txt-fixer
+    -   id: detect-private-key
+    -   id: detect-aws-credentials
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-json
+    -   id: check-xml
+    -   id: check-toml
+    -   id: check-added-large-files
+    -   id: requirements-txt-fixer
 # # -   repo: https://github.com/psf/black
 # #     rev: 22.3.0
 # #     hooks:
