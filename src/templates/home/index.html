@@ -1,0 +1,35 @@
+{% extends "shared/layout.html" %}
+
+{% block content %}
+
+    <h1><span class="font-semi-bold">Upload Service</span> <span class="smaller">A RESTful weather service</span>
+    </h1>
+
+    <div style="clear:both;"></div>
+    <br>
+    <br>
+    <p class="lead">
+        The <a href="https://tjsullivan1.github.io/">File</a> upload service.<br>
+        <br>
+
+        <h1>Upload new File</h1>
+        <form method=post enctype=multipart/form-data action='/api/files'>
+            <input type=file name=file>
+            <input type=submit value=Upload>
+        </form>
+
+    </p>
+
+    {% if events %}
+    <div>
+        <h2>Recent Weather Events</h2>
+        <ul>
+            {% for e in events %}
+            <li> {{ e.location.city }}, {{ e.location.state }}, {{e.location.country}}: {{ e.description }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    </div>
+
+{% endblock %}
