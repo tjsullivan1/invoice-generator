@@ -1,6 +1,7 @@
 import io
+import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from flask import Flask, render_template, request, send_file
 from weasyprint import HTML
@@ -14,48 +15,53 @@ def get_current_date():
     return datetime.now().strftime("%B %-d, %Y")
 
 
+# Get default data from file
+def get_default_data_from_file(filepath):
+    with open(filepath, "r") as f:
+        data = f.read()
+    return data
+
+
+# Generate data to submit to invoice based off of posted data or default data
+def generate_data(posted_data, data):
+    if posted_data:
+        data["invoice_number"] = posted_data["invoice_number"]
+        data["from_addr"] = posted_data["from_addr"]
+        data["to_addr"] = posted_data["to_addr"]
+        data["due_date"] = posted_data["due_date"]
+        data["items"] = posted_data["items"]
+
+    data["total"] = round(sum([i["charge"] for i in data["items"]]), 2)
+    return data
+
+
+# Render template from my data
+def render_template_from_data(data, today):
+    return render_template(
+        "invoice.html",
+        date=today,
+        from_addr=data.get("from_addr"),
+        to_addr=data.get("to_addr"),
+        items=data.get("items"),
+        total=data.get("total"),
+        invoice_number=data.get("invoice_number"),
+        due_date=data.get("due_date"),
+    )
+
+
 @app.route("/", methods=["GET", "POST"])
 def hello_world():
     today = get_current_date()
     posted_data = request.get_json() or {}
-    default_data = {
-        "invoice_number": 123,
-        "from_addr": {
-            "company_name": "Sullivan Enterprises",
-            "addr1": "2911 Anystreet",
-            "addr2": "Roseville, MN  55113",
-        },
-        "to_addr": {
-            "company_name": "Sullivan Group",
-            "person_name": "Mr. Sullivan",
-            "person_email": "mr@sullivanenterprises.org",
-        },
-        "items": [
-            {"title": "website design", "charge": 300.00},
-            {"title": "Hosting (3 months)", "charge": 75.00},
-            {"title": "Domain name (1 year)", "charge": 10.00},
-        ],
-        "due_date": (datetime.today() + timedelta(30)).strftime("%B %-d, %Y"),
-    }
-
-    due_date = posted_data.get("duedate", default_data["due_date"])
-    from_addr = posted_data.get("from_addr", default_data["from_addr"])
-    to_addr = posted_data.get("to_addr", default_data["to_addr"])
-    invoice_number = posted_data.get("invoice_number", default_data["invoice_number"])
-    items = posted_data.get("items", default_data["items"])
-
-    total = sum([i["charge"] for i in items])
-
-    rendered = render_template(
-        "invoice.html",
-        date=today,
-        from_addr=from_addr,
-        to_addr=to_addr,
-        items=items,
-        total=total,
-        invoice_number=invoice_number,
-        due_date=due_date,
+    default_data = json.loads(
+        get_default_data_from_file(
+            os.path.join(os.path.dirname(__file__), "sample-data.json")
+        )
     )
+
+    data = generate_data(posted_data, default_data)
+
+    rendered = render_template_from_data(data, today)
 
     html = HTML(string=rendered)
     rendered_pdf = html.write_pdf()
