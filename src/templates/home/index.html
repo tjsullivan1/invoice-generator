@@ -12,10 +12,12 @@
         The <a href="https://tjsullivan1.github.io/">Invoice</a> service.<br>
         <br>
 
-        <h1>Upload new File</h1>
-        <form method=post enctype=multipart/form-data action='/api/files'>
-            <input type=input name=file>
-            <input type=submit value=Upload>
+        <h1>Generate New Invoice</h1>
+        <form method=post action='/api/invoice'>
+            Number of Tenants: <input type="number" name="tenants" value="1"><br>
+            Utilities: <input type=float name=utilities><br />
+            Rent: <input type="float" name=rent><br />
+            <input type=submit value=Create>
         </form>
 
     </p>
