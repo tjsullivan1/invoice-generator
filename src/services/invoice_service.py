@@ -37,6 +37,7 @@ def render_template_from_data(request, data, today=get_current_date()):
         "invoice.html",
         {
             "request": request,
+            "invoice_number": data["invoice_number"],
             "date": today,
             "from_addr": data["from_addr"],
             "to_addr": data["to_addr"],
