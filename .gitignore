@@ -3,3 +3,5 @@ venv/
 
 *.pdf
 .venv/
+
+__pycache__/

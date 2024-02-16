@@ -13,9 +13,12 @@ app = Flask(__name__)
 def invoice():
     app.logger.debug("In the invoice function")
     today = datetime.today().strftime("%B %-d, %Y")
-    posted_data = request.get_json(force=True, silent=True)
+    posted_data = request.get_json()
 
     if posted_data is None:
+        app.logger.debug(request)
+        app.logger.debug(dir(request))
+        app.logger.debug(request.data)
         app.logger.debug("posted_data is None")
         posted_data = {}
 
@@ -60,9 +63,9 @@ def invoice():
     )
 
     html = HTML(string=rendered)
-    rendered_pdf = html.write_pdf("./static/invoice.pdf")  # noqa: F841
+    rendered_pdf = html.write_pdf("invoice.pdf")  # noqa: F841
     return send_file(
-        "./static/invoice.pdf"
+        "invoice.pdf"
         # io.BytesIO(rendered_pdf),
         # attachment_filename='invoice.pdf'
     )
